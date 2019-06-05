@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间指向对应的接口-->
+<mapper namespace="net.wanho.mapper.StudentMapper">
+    <resultMap id="stuMap" type="Student">
+        <result column="sname" property="sname"/>
+        <result column="id" property="id"/>
+        <result column="age" property="age"/>
+        <result column="address" property="address"/>
+        <result column="gender" property="gender"/>
+    </resultMap>
+    <insert id="addStu" parameterType="Student" useGeneratedKeys="true" keyProperty="id">
+        INSERT into student VALUES (null,#{sname},#{age},#{gender},#{address})
+    </insert>
+    <insert id="addStuReturnKey">
+        <selectKey keyProperty="id" order="AFTER" resultType="integer">
+            SELECT last_insert_id()
+        </selectKey>
+        INSERT into student VALUES (null,#{sname},#{age},#{gender},#{address})
+    </insert>
+    <update id="updateStu" parameterType="Student">
+        UPDATE student SET sname=#{sname} where id=#{id}
+    </update>
+    <update id="updateStuById">
+        UPDATE student SET address=#{address},age=#{age},sname=#{sname} where id=#{id}
+    </update>
+    <update id="updateStuById2">
+        UPDATE student SET sname=#{stu.sname},address=#{stu.address},age=#{stu.age} where id=#{id}
+    </update>
+    <delete id="delStu">
+        DELETE FROM student where id=#{id}
+    </delete>
+    <select id="getAllStus" resultType="Student">
+        SELECT * from student
+    </select>
+    <select id="getStuById" resultMap="stuMap">
+        SELECT * from student WHERE id=#{id}
+    </select>
+    <select id="getStuByName" resultMap="stuMap" parameterType="Student">
+        SELECT * FROM student WHERE sname like concat("%",#{sname},"%")
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM student
+    </select>
+
+</mapper>
